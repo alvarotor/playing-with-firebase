@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>taglandia</title>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Slab">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="//selectize.github.io/selectize.js/css/selectize.default.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/home.css" />
+</head>
+
+<body>
+    <div class="container">
+        <br>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">TAGLANDIA</a>
+                </div>
+                <p class="navbar-text">
+                    <span id="log-in-status">Logged Out</span>
+                </p>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <button type="button" class="btn btn-default navbar-btn" id="btnRemoveSamples">Remove samples</button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target=".auth-modal">Login</button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-primary navbar-btn" id="tagsButton">Tags</button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-primary navbar-btn" id="addButton">Add</button>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+        <div class="row">
+            <div class="col-md-11">
+                <label for="tagBox">Tags</label>
+                <select id="tagBox" multiple placeholder="Select a tag..." required></select>
+            </div>
+            <div class="col-md-1">
+                <label for="btnSearch">Search</label><br>
+                <button type="submit" class="btn btn-default" id="btnSearch">Search</button>
+            </div>
+        </div>
+        <div id="search_elements">
+            <h2 v-if="elements.length > 0">Results</h2>
+            <div class="row" v-for="data in elements">
+                <div class="col-md-12">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{ data.name }}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <img :src="data.pictureURL" alt="{{ data.name }}" class="img-thumbnail img-responsive">
+                                </div>
+                                <div class="col-md-6">
+                                    <b>Description:</b><br> {{ data.description }}
+                                    <hr />
+                                    <b>Tags:</b><br> {{ data.tags }}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 samples selling_stuff">
+                <h3>Find stuff for sale</h3>
+                <select class="sampleBox" multiple>
+                    <option selected>Used</option>
+                    <option selected>Car</option>
+                    <option selected>Wolkswagen</option>
+                    <option selected>Old</option>
+                    <option selected>London</option>
+                    <option selected>Cheap</option>
+                    <option selected>Working</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 samples mini_jobs">
+                <h3>Find mini Jobs</h3>
+                <select class="sampleBox" multiple>
+                    <option selected>Work</option>
+                    <option selected>Cleaner</option>
+                    <option selected>Cleaning</option>
+                    <option selected>House</option>
+                    <option selected>Flat</option>
+                    <option selected>Hours</option>
+                    <option selected>Washing</option>
+                    <option selected>Wash</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 samples jobs">
+                <h3>Find jobs</h3>
+                <select class="sampleBox" multiple>
+                    <option selected>Work</option>
+                    <option selected>Professional</option>
+                    <option selected>Permanent</option>
+                    <option selected>Executive</option>
+                    <option selected>High</option>
+                    <option selected>Salary</option>
+                    <option selected>Finance</option>
+                    <option selected>Accountant</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 samples jobs_it">
+                <h3>Find IT Jobs</h3>
+                <select class="sampleBox" multiple>
+                    <option selected>Work</option>
+                    <option selected>Professional</option>
+                    <option selected>IT</option>
+                    <option selected>Programmer</option>
+                    <option selected>System</option>
+                    <option selected>Administrator</option>
+                    <option selected>C++</option>
+                    <option selected>Developer</option>
+                    <option selected>Javascript</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 samples real_state">
+                <h3>Find housing and real state</h3>
+                <select class="sampleBox" multiple>
+                    <option selected>Apartments</option>
+                    <option selected>Flats</option>
+                    <option selected>Rooms</option>
+                    <option selected>Kitchen</option>
+                    <option selected>Cheap</option>
+                    <option selected>Affordable</option>
+                    <option selected>Furniture</option>
+                    <option selected>Family</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 samples dating_site_girl">
+                <h3>Find a woman to date</h3>
+                <select class="sampleBox" multiple>
+                    <option selected>Woman</option>
+                    <option selected>Happy</option>
+                    <option selected>Positive</option>
+                    <option selected>Smiley</option>
+                    <option selected>Pretty</option>
+                    <option selected>Young</option>
+                    <option selected>Tall</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 samples dating_site_boy">
+                <h3>Find a man to date</h3>
+                <select class="sampleBox" multiple>
+                    <option selected>Man</option>
+                    <option selected>Crazy</option>
+                    <option selected>Adventurous</option>
+                    <option selected>Strong</option>
+                    <option selected>Professional</option>
+                    <option selected>Happy</option>
+                    <option selected>Sexy</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 bigtextfooter">
+                Or add and search anything else with its respective tags :)
+            </div>
+        </div>
+        <footer>
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="mailto:goodbytes23@yahoo.es" class="pull-left">Questions, suggestions and feedback</a>
+                </div>
+                <div class="col-md-6">
+                    <a href="mailto:goodbytes23@yahoo.es" class="pull-right">Terms & Conditions</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal fade auth-modal" tabindex="-1" role="dialog" aria-labelledby="AuthModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="AuthModalLabel">Login or sign up</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="email" name="email" placeholder="Email" class="form-control" required minlength="4" />
+                    <input type="password" id="password" name="password" placeholder="Password" class="form-control" required minlength="4" />
+                    <br />
+                    <p>
+                        <button id="log-in" name="log-in" class="btn btn-default">Log In</button>
+                        <button id="sign-up" name="sign-up" class="btn btn-default">Sign Up</button>
+                    </p>
+                    <p>
+                        <button disabled id="verify-email" name="verify-email" class="btn btn-default">Send Email Verification</button>
+                        <button id="password-reset" name="verify-email" class="btn btn-default">Send Password Reset Email</button>
+                    </p>
+                    <p>
+                        <button class="btn btn-default" id="facebook-sign-in" name="facebook-sign-in">Log in with Facebook</button>
+                        <button class="btn btn-default" id="google-sign-in" name="google-sign-in">Log in with Google</button>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="//www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+    <script src="/scripts/fb.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.1.7/vue.min.js" integrity="sha256-GWE4YAcwdsBKeN5fs7219TDvYSuN7YPQyqLk7pKuorQ="
+        crossorigin="anonymous"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.3/lodash.min.js" integrity="sha256-SOD4peoOs2SWbOGcXS2Vi+atDcIH/ArIcJY5zZqL6PM="
+        crossorigin="anonymous"></script>
+
+    <script src="//cdn.rawgit.com/selectize/selectize.js/master/dist/js/standalone/selectize.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8="
+        crossorigin="anonymous"></script>
+
+    <script src="/scripts/navButtons.js"></script>
+    <script src="/scripts/tagBox.js"></script>
+    <script src="/scripts/auth.js"></script>
+
+    <script>
+        $('.auth-modal').on('shown.bs.modal', function () {
+            $('#email').focus()
+        });
+
+        var searcher = new Vue({
+            el: "#search_elements",
+            data: {
+                elements: []
+            },
+            methods: {
+                search: function () {
+                    var that = this;
+                    that.elements = [];
+                    var results = [];
+                    var db = firebase.database();
+                    tagbox[0].selectize.getValue().map(function (boxItem) {
+                        db.ref("tags/en/" + boxItem.split("###")[0] + "/elements").once("value", function (element) {
+                            if (element.val() !== null) {
+                                Object.keys(element.val()).map(function (key) {
+                                    db.ref("elements/en/" + key).once("value", function (obj) {
+                                        var keyObj = obj.key;
+                                        var obj = obj.val();
+                                        var tags = "";
+                                        for (var prop in obj.tags)
+                                            tags += obj.tags[prop] + ",";
+                                        obj.tags = tags.substring(0, tags.length - 1);
+                                        results.push({
+                                            key: keyObj,
+                                            name: obj.name,
+                                            description: obj.description,
+                                            tags: obj.tags,
+                                            pictureURL: obj.pictureURL
+                                        });
+                                        that.elements = _.uniqBy(results, 'key');
+                                    });
+                                });
+                            }
+                            else
+                                that.elements.push({ name: "No elements found. Try add some." });
+                        });
+                    });
+                }
+            }
+        });
+
+        document.getElementById("btnSearch").addEventListener("click", function () {
+            searcher.search();
+        });
+
+        document.getElementById("btnRemoveSamples").addEventListener("click", function () {
+            [].map.call(document.querySelectorAll(".samples"), function (e) {
+                e.classList.toggle("hide");
+            });
+        });
+
+        // function checkCookie() {
+        //     var samples = getCookie("samples");
+        //     if (samples != "") {
+        //         alert("Welcome again " + samples);
+        //     } else {
+        //         samples = prompt("Please enter your name:", "");
+        //         if (samples != "" && samples != null) {
+        //             setCookie("samples", samples, 7);
+        //         }
+        //     }
+        // }
+
+        // function getCookie(cname) {
+        //     var name = cname + "=";
+        //     var decodedCookie = decodeURIComponent(document.cookie);
+        //     var ca = decodedCookie.split(';');
+        //     for (var i = 0; i < ca.length; i++) {
+        //         var c = ca[i];
+        //         while (c.charAt(0) == ' ') {
+        //             c = c.substring(1);
+        //         }
+        //         if (c.indexOf(name) == 0) {
+        //             return c.substring(name.length, c.length);
+        //         }
+        //     }
+        //     return "";
+        // }
+
+        // function setCookie(cname, cvalue, exdays) {
+        //     var d = new Date();
+        //     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        //     var expires = "expires=" + d.toUTCString();
+        //     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        // }
+    </script>
+
+</body>
+
+</html>

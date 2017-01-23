@@ -1,0 +1,34 @@
+body {
+    font-family: "Roboto Slab", serif;
+    background: #ECEFF1;
+    color: rgba(0,0,0,0.87);
+}
+
+a {
+    color: rgb(3,155,229);
+}
+
+.form > .row > .col-md-12 { 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+td.loading {
+    text-align: center;
+}
+
+.btn.btn-primary.navbar-btn {
+    margin-left: 5px;
+}
+
+footer > .row {
+    background-color: dodgerblue;
+    padding-bottom: 50px;
+}
+
+footer > div > div > a {
+    color: white;
+    padding-top: 20px;
+}

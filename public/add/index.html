@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>taglandia</title>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Slab">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="//selectize.github.io/selectize.js/css/selectize.default.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <br>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">TAGLANDIA</a>
+                </div>
+                <p class="navbar-text">
+                    <span id="log-in-status">Logged Out</span>
+                </p>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <button type="button" class="btn btn-primary navbar-btn" id="tagsButton">Tags</button>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Add a new one</h1>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Name" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea rows="5" class="form-control" id="description" placeholder="Description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="picture">Picture</label>
+                            <input type="file" id="picture" class="form-control">
+                        </div>
+                        <div class="col-md-8">
+                            <label for="uploaderBar">Picture progress</label>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;">
+<span class="sr-only">0%</span>
+</div>
+</div>
+<small id="picsMessage">Upload a picture.</small>
+</div>
+</div>
+</div>
+<div class="form-group">
+    <label for="tagBox">Tags</label>
+    <select id="tagBox" multiple placeholder="Select a tag..." required>
+        <!--<option value="AL">Alabama</option>
+        <option value="AK">Alaska</option>
+        <option value="DC">District of Columbia</option>-->
+    </select>
+</div>
+<button type="submit" class="btn btn-default" id="addElement">Add</button>
+<small id="addLoginMessage"></small>
+</div>
+</div>
+<hr />
+<div id="elements">
+    <h2>All added so far</h2>
+    <div class="row" v-for="data in elements">
+        <div class="col-md-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ data.name }}</h3>
+                </div>
+                <div class="panel-body">
+                    <button class="btn btn-default pull-right">
+                        <span class="glyphicon glyphicon-remove" @click="remove(data.key)"></span>
+                    </button> {{ data.description }}
+                    <hr /> {{ data.tags }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script src="//www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+<script src="/scripts/fb.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.1.7/vue.min.js" integrity="sha256-GWE4YAcwdsBKeN5fs7219TDvYSuN7YPQyqLk7pKuorQ="
+    crossorigin="anonymous"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.3/lodash.min.js" integrity="sha256-SOD4peoOs2SWbOGcXS2Vi+atDcIH/ArIcJY5zZqL6PM="
+    crossorigin="anonymous"></script>
+
+<script src="//cdn.rawgit.com/selectize/selectize.js/master/dist/js/standalone/selectize.min.js"></script>
+
+<script src="/scripts/navButtons.js"></script>
+<script src="/scripts/tagBox.js"></script>
+<script src="/scripts/auth.js"></script>
+
+<script>
+    var db = firebase.database();
+    var addElement = document.getElementById("addElement");
+    var picture = document.getElementById("picture");
+    var pictureUploaded = true;
+    var pictureURL = "";
+
+    picture.addEventListener("change", function (e) {
+        pictureUploaded = false;
+        var file = e.target.files[0];
+        var storageRef = firebase.storage().ref("elements/" + file.name);
+        var uploadTask = storageRef.put(file);
+        uploadTask.on("state_changed",
+            function progress(snapshot) {
+                var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                $('.progress-bar').css('width', percentage + '%').attr('aria-valuenow', percentage);
+                document.getElementById('picsMessage').textContent = 'Uploading';
+            },
+            function error(err) {
+                switch (err.code) {
+                    case "storage/unauthorized":
+                        console.error("User does not have permission to access", err);
+                        break;
+                    case "storage/canceled":
+                        console.error("User canceled the upload", err);
+                        break;
+                    case "storage/unknown":
+                        // Inspect err.serverResponse
+                        console.error(err);
+                        break;
+                }
+            },
+            function complete() {
+                pictureURL = uploadTask.snapshot.downloadURL;
+                pictureUploaded = true;
+                document.getElementById('picsMessage').textContent = 'Picture uploaded.';
+            }
+        );
+    });
+
+    addElement.addEventListener("click", function () {
+        if (!pictureUploaded) {
+            if (confirm("Uploading a pic failed, wanna upload without picture?"))
+                saveElement();
+        }
+        else
+            saveElement();
+    });
+
+    function saveElement() {
+        var selectizeControl = tagbox[0].selectize;
+        var tags = {};
+        selectizeControl.getValue().map(function (item) {
+            var tag = item.split("###");
+            tags[tag[0]] = tag[1];
+        });
+        console.log(tags)
+        console.log(Object.keys(tags))
+        if (document.getElementById("name").value === null && document.getElementById("description").value === null) {
+            alert("You cannot add an element without name or description.");
+            return;
+        }
+        if (Object.keys(tags).length === 0) {
+            alert("You cannot add an element without tags.");
+            return;
+        }
+        if (!uid) {
+            alert("You must be logged in.");
+            return;
+        }
+        var newElementKey = db.ref().child("elements/en/").push().key;
+        var newElement = {};
+        newElement["elements/en/" + newElementKey] = {
+            name: document.getElementById("name").value,
+            description: document.getElementById("description").value,
+            tags: tags,
+            user: uid,
+            pictureURL
+        };
+        for (tag in tags)
+            newElement["tags/en/" + tag + "/elements/" + newElementKey] = document.getElementById("name").value;
+        console.log(newElement)
+        db.ref().update(newElement, cleanForm);
+    }
+
+    function cleanForm() {
+        pictureURL = "";
+        document.getElementById("name").value = "";
+        document.getElementById("description").value = "";
+        var $select = $("#tagBox").selectize();
+        var control = $select[0].selectize;
+        control.clear();
+        alert("Element added");
+    };
+
+    new Vue({
+        el: "#elements",
+        data: {
+            elements: []
+        },
+        methods: {
+            start: function () {
+                var that = this;
+                db.ref("elements/en/").on("child_added", function (data) {
+                    var item = data.val();
+                    item.key = data.key;
+                    var tags = "";
+                    for (var property in item.tags)
+                        tags += item.tags[property] + ",";
+                    item.tags = tags.substring(0, tags.length - 1);
+                    that.elements.push(item);
+                });
+            },
+            remove: function (key) {
+                var that = this;
+                //add logic to delete pictures.
+                db.ref("elements/en/").child(key).once("value", function (snapshot) {
+                    var tagCount = 0, tagTotal = Object.keys(snapshot.val().tags).length;
+                    db.ref("elements/en/").child(key).remove(function () {
+                        Object.keys(snapshot.val().tags).map(function (tag) {
+                            db.ref("tags/en/" + tag + "/elements/").child(key).remove(function () {
+                                tagCount++;
+                                if (tagCount === tagTotal)
+                                    that.elements.splice(_.findIndex(that.elements, { key: key }), 1);
+                            });
+                        });
+                    });
+                })
+            }
+        },
+        mounted: function () {
+            this.start();
+        }
+    });
+</script>
+
+</body>
+
+</html>

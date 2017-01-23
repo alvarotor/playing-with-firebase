@@ -1,0 +1,134 @@
+        body > .container-fluid {
+            margin-top: 50px;
+        }
+        .samples {
+            position: relative;
+            min-height: 300px;
+        }
+        .samples h3 {
+            background-color: black;
+            color: white;
+            padding: 20px;
+            float: left;
+        }
+        .sampleBox {
+            position: absolute;
+            bottom: 0;
+            width: 98%;
+            margin-bottom: 20px;
+        }
+        @media only screen and (max-device-width: 480px) {
+            .sampleBox {
+                width: 88%;
+            }
+	    }
+        @media (min-device-width: 480px) and (max-device-width: 768px) {
+            .sampleBox {
+                width: 95%;
+            }
+	    }
+        .selling_stuff {
+            background-image: url("/content/for-sale.jpg");
+            background-position: 0px -30px;
+        }
+        @media only screen and (max-device-width: 768px) {
+            .selling_stuff {
+                background-size: cover; 
+                background-position: 0px 0px;
+            }
+	    }
+        .dating_site_boy {
+            background-image: url("/content/man.jpg");
+            background-size: cover; 
+            background-position: 0px -215px;
+        }
+        @media only screen and (max-device-width: 768px) {
+            .dating_site_boy {
+                background-position: -50px 0px;
+            }
+	    }
+        @media (min-device-width: 480px) and (max-device-width: 768px) {
+            .dating_site_boy {
+                background-position: 0px -90px;
+            }
+	    }
+        .dating_site_girl {
+            background: url("/content/woman.jpg");
+            background-size: cover; 
+            background-position: 0px -225px;
+        }
+        @media only screen and (max-device-width: 768px) {
+            .dating_site_girl {
+                background-position: 0px 0px;
+            }
+	    }
+        @media (min-device-width: 480px) and (max-device-width: 768px) {
+            .dating_site_girl {
+                background-position: 0px -90px;
+            }
+	    }
+        .mini_jobs {
+            background-image: url("/content/cleaners.jpg");
+            background-position: 0px -175px;
+            background-size: cover; 
+        }
+        @media only screen and (max-device-width: 768px) {
+            .mini_jobs {
+                background-position: -55px 0px;
+            }
+	    }
+        @media (min-device-width: 480px) and (max-device-width: 768px) {
+            .mini_jobs {
+                background-position: 0px 0px;
+            }
+	    }
+        .jobs {
+            background-image: url("/content/interview.jpg");
+            background-size: cover; 
+        }
+        @media only screen and (max-device-width: 768px) {
+            .jobs {
+                background-position: -160px 0px;
+            }
+	    }
+        @media (min-device-width: 480px) and (max-device-width: 768px) {
+            .jobs {
+                background-position: 0px 0px;
+            }
+	    }
+        .jobs_it {
+            background-image: url("/content/it.jpg");
+            background-position: 0px -240px;
+            background-size: cover; 
+        }
+        @media only screen and (max-device-width: 768px) {
+            .jobs_it {
+                background-position: 0px 0px;
+            }
+	    }
+        @media (min-device-width: 480px) and (max-device-width: 768px) {
+            .jobs_it {
+                background-position: 0px -100px;
+            }
+	    }
+        .real_state {
+            background-image: url("/content/realestate.jpg");
+            background-size: cover; 
+            background-position: 0px -400px;
+        }
+        @media only screen and (max-device-width: 768px) {
+            .real_state {
+                background-position: -50px 0px;
+            }
+	    }
+        @media (min-device-width: 480px) and (max-device-width: 768px) {
+            .real_state {
+                background-position: 0px -170px;
+            }
+	    }
+        .bigtextfooter {
+            text-align: center;
+            font-weight: bold;
+            font-size: 3em;
+            margin: 30px;
+        }

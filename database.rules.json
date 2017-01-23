@@ -1,0 +1,15 @@
+{
+  "rules": {
+    ".read": "true",
+    ".write": "true",
+    "tags": {
+      "en": {
+        "$tagsId": {
+          "name": {
+            ".write": "!data.exists()"
+          }
+        }
+      }
+    }
+  }
+}

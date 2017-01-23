@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>taglandia</title>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Slab">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+    <div class="container form">
+        <br>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">TAGLANDIA</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <button type="button" class="btn btn-primary navbar-btn" id="authButton">Auth</button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-primary navbar-btn" id="tagsButton">Tags</button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-primary navbar-btn" id="addButton">Add element</button>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-inline" id="tagAdder">
+                    <div class="form-group">
+                        <label for="tag">Tag Name</label>
+                        <input type="text" class="form-control" id="tag" placeholder="Tag" required />
+                    </div>
+                    <input type="hidden" id="key" />
+                    <button type="submit" class="btn btn-primary" id="saveTag">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped" id="tableRows">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tag</th>
+                            <th>Update</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-if="tags.length === 0 && !loaded">
+                            <td colspan="5" class="loading">Loading...</td>
+                        </tr>
+                        <tr v-for="data in tagsByName">
+                            <td>{{ data.key }}</td>
+                            <td>{{ data.name }}</td>
+                            <td><button class="btn btn-default" @click="update(data.key, data.name)"><span class="glyphicon glyphicon-edit"></span></button></td>
+                            <td><button class="btn btn-default" @click="remove(data.key)"><span class="glyphicon glyphicon-remove"></span></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="//www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+    <script src="/scripts/fb.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.1.7/vue.min.js" integrity="sha256-GWE4YAcwdsBKeN5fs7219TDvYSuN7YPQyqLk7pKuorQ="
+        crossorigin="anonymous"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.3/lodash.min.js" integrity="sha256-SOD4peoOs2SWbOGcXS2Vi+atDcIH/ArIcJY5zZqL6PM="
+        crossorigin="anonymous"></script>
+
+    <script src="/scripts/navButtons.js"></script>
+
+    <script>
+        new Vue({
+            el: "#tableRows",
+            data: {
+                tags: [],
+                counter: 0,
+                loaded: false
+            },
+            computed: {
+                tagsByName: function () {
+                    var tags = this.tags.map(function (item) {
+                        item.name = _.capitalize(item.name);
+                        return item;
+                    });
+                    return _.sortBy(tags, "name");
+                }
+            },
+            methods: {
+                start: function () {
+                    var that = this;
+                    var tagsRef = firebase.database().ref("tags/en/");
+                    tagsRef.on("child_added", function (data) {
+                        that.loaded = true;
+                        var item = data.val();
+                        item.key = data.key;
+                        that.tags.push(item);
+                    });
+                    tagsRef.on("child_removed", function (data) {
+                        that.tags.splice(_.findIndex(that.tags, { key: data.key }), 1);
+                    });
+                    tagsRef.on("child_changed", function (data) {
+                        Vue.set(that.tags, _.findIndex(that.tags, { key: data.key }),
+                            { key: data.key, name: data.val().name });
+                    });
+                    tagsRef.once("value", function (snapshot) {
+                        var data = snapshot.exists();
+                        var thereTags = snapshot.child("tags/en/").exists();
+                        if (!thereTags)
+                            that.loaded = true;
+                    });
+                },
+                remove: function (key) {
+                    firebase.database().ref("tags/en/").child(key).remove();
+                },
+                update: function (key, name) {
+                    document.getElementById("saveTag").textContent = "Update";
+                    document.getElementById("key").value = key;
+                    document.getElementById("tag").value = name;
+                }
+            },
+            mounted: function () {
+                this.start();
+            }
+        });
+
+        function createTagData(name) {
+            firebase.database().ref("tags/en/").push({ name: name }, cleanForm);
+        };
+
+        function updateTagData(key, name) {
+            var postData = { name: name };
+            var updates = {};
+            // var newPostKey = firebase.database().ref().child('posts').push().key;
+            updates["/tags/en/" + key] = postData;
+            // updates["/user-posts/" + uid + "/" + newPostKey] = postData;
+            firebase.database().ref().update(updates, cleanForm);
+        };
+
+        function cleanForm() {
+            document.getElementById("saveTag").innerHTML = "Save";
+            document.getElementById("key").value = "";
+            document.getElementById("tag").value = "";
+        }
+
+        document.getElementById("saveTag").addEventListener("click", function (e) {
+            e.preventDefault();
+            var key = document.getElementById("key").value;
+            var tag = document.getElementById("tag").value;
+            if (tag && !key)
+                createTagData(tag);
+            else if (tag && key)
+                updateTagData(key, tag);
+        });
+    </script>
+
+</body>
+
+</html>
